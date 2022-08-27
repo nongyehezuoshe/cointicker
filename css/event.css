@@ -1,0 +1,34 @@
+mge.bg{
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	opacity: 0.88;
+	background: rgba(88,88,88,0);
+	z-index: 88888888;
+	position: fixed;
+	left: 0;
+	top: 0;
+	transition: all .8s ease-in-out;
+}
+mge .god{
+	box-sizing: border-box;
+	transition: all .8s ease-in-out;
+	position: absolute;
+	background-size: contain;
+	background-repeat: no-repeat;
+	/*background-position: center;*/
+	opacity: 0.08;
+}
+mge .notfi{
+	box-sizing: border-box;
+	transition: all .8s ease-in-out;
+	text-align: center;
+	background-color: #fe00008f;
+	height: 38.88px;
+	display: block;
+	width: 100%;
+	padding: 8px;
+	opacity: 0.008;
+	font-size: 18px;
+	color: #fff;
+}

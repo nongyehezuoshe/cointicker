@@ -1,0 +1,98 @@
+{
+	"ext_name":{
+		"message":"Coin Ticker"
+	},
+	"ext_name_xch":{
+		"message":"Coin Ticker - Chia(XCH) Edition"
+	},
+	"ext_name_eth":{
+		"message":"Coin Ticker - Ethereum(ETH) Edition"
+	},
+	"ext_name_btc":{
+		"message":"Coin Ticker - Bitcoin(BTC) Edition"
+	},
+	"ext_des": {
+		"message": "Display crypto coin market prices in real-time."
+	},
+	"about_homepage":{
+		"message":"Homepage:"
+	},
+	"about_feedback":{
+		"message":"Feedback:"
+	},
+	"about_donate":{
+		"message":"Support:"
+	},
+	"about_alledition":{
+		"message":"All Edition："
+	},
+	"edition_normal":{
+		"message":"Normal"
+	},
+	"edition_chia":{
+		"message":"Chia Edition"
+	},
+	"edition_eth":{
+		"message":"Ethereum Edition"
+	},
+	"edition_btc":{
+		"message":"Bitcoin Edition"
+	},
+	"tip_tprepeat":{
+		"message":"The trading pair has already been added and cannot be added again!"
+	},
+	"tip_last":{
+		"message":"The current trading pair cannot be deleted, please keep at least one!"
+	},
+	"panel_api":{
+		"message":"Select a market information service provider"
+	},
+	"panel_tpadd":{
+		"message":"Add trading pair"
+	},
+	"panel_tpedit":{
+		"message":"Manage trading pairs"
+	},
+	"color_main":{
+		"message":"Background color for the main price:"
+	},
+	"color_ext":{
+		"message":"Color for extended prices："
+	},
+	"color_extbg":{
+		"message":"Background color for extended prices："
+	},
+	"icon":{
+		"message":"When there is no extended prices data, display the trading pair code"
+	},
+	"okx_SPOT":{
+		"message":"SPOT"
+	},
+	"okx_MARGIN":{
+		"message":"MARGIN"
+	},
+	"okx_SWAP":{
+		"message":"SWAP"
+	},
+	"okx_FUTURES":{
+		"message":"FUTURES"
+	},
+	"okx_OPTION":{
+		"message":"OPTION"
+	},
+	"btn_add":{
+		"message":"ADD"
+	},
+	"btn_save":{
+		"message":"SAVE"
+	},
+	"btn_reset":{
+		"message":"RESET"
+	},
+	"btn_about":{
+		"message":"ABOUT"
+	},
+	"btn_recon":{
+		"message":"RECONNECT"
+	}
+}
