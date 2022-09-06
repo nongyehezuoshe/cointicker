@@ -1,18 +1,18 @@
 {
 	"ext_name":{
-		"message":"Coin Ticker"
+		"message":"Cryptocurrency Ticker"
 	},
 	"ext_name_xch":{
-		"message":"Coin Ticker - Chia(XCH) Edition"
+		"message":"Cryptocurrency Ticker - Chia(XCH) Edition"
 	},
 	"ext_name_eth":{
-		"message":"Coin Ticker - Ethereum(ETH) Edition"
+		"message":"Cryptocurrency Ticker - Ethereum(ETH) Edition"
 	},
 	"ext_name_btc":{
-		"message":"Coin Ticker - Bitcoin(BTC) Edition"
+		"message":"Cryptocurrency Ticker - Bitcoin(BTC) Edition"
 	},
 	"ext_des": {
-		"message": "Display crypto coin market prices in real-time."
+		"message": "Show the price of specified cryptocurrency in badge or tabs."
 	},
 	"about_homepage":{
 		"message":"Homepage:"
@@ -47,23 +47,14 @@
 	"panel_api":{
 		"message":"Select a market information service provider"
 	},
+	"panel_customize":{
+		"message":"Customize Options"
+	},
 	"panel_tpadd":{
 		"message":"Add trading pair"
 	},
 	"panel_tpedit":{
 		"message":"Manage trading pairs"
-	},
-	"color_main":{
-		"message":"Background color for the main price:"
-	},
-	"color_ext":{
-		"message":"Color for extended prices："
-	},
-	"color_extbg":{
-		"message":"Background color for extended prices："
-	},
-	"icon":{
-		"message":"When there is no extended prices data, display the trading pair code"
 	},
 	"okx_SPOT":{
 		"message":"SPOT"
@@ -92,7 +83,100 @@
 	"btn_about":{
 		"message":"ABOUT"
 	},
-	"btn_recon":{
-		"message":"RECONNECT"
+	"opt_iconauto":{
+		"message":"Show prices in Badge automatically"
+	},
+	"opt_tabauto":{
+		"message":"Show prices in tabs automatically"
+	},
+	"opt_tabpos":{
+		"message":"Default position"
+	},
+	"opt_tabbgcolor":{
+		"message":"Background Color"
+	},
+	"opt_tabbordercolor":{
+		"message":"Border Color"
+	},
+	"opt_tabopacity":{
+		"message":"Opacity"
+	},
+	"opt_tabboxshadowcolor":{
+		"message":"Color of Box shadow"
+	},
+	"opt_tabboxshadowx":{
+		"message":"offset-x of Box shadow"
+	},
+	"opt_tabboxshadowy":{
+		"message":"offset-y of Box shadow"
+	},
+	"opt_tabboxshadowblur":{
+		"message":"blur-radius of Box shadow"
+	},
+	"opt_tabboxshadowspread":{
+		"message":"spread-radius of Box shadow"
+	},
+	"opt_badgebgcolor":{
+		"message":"Background color for the main price:"
+	},
+	"opt_tpicon":{
+		"message":"Show the trading pair code, When there is no extended prices data"
+	},
+	"opt_iconcolor":{
+		"message":"Color for extended prices"
+	},
+	"opt_iconbgcolor":{
+		"message":"Background Color for extended prices"
+	},
+	"opt_inicon":{
+		"message":"Show current trading pair price in badge"
+	},
+	"opt_namecolor":{
+		"message":"Trading pair Name Color"
+	},
+	"opt_namebgcolor":{
+		"message":"Trading pair Name Background color"
+	},
+	"opt_pricecolor":{
+		"message":"Price Color"
+	},
+	"opt_pricebgcolor":{
+		"message":"Price Backgroud Color"
+	},
+	"opt_intab":{
+		"message":"Show current trading pair price in Tab"
+	},
+	"name_inbadge":{
+		"message":"Options for badge"
+	},
+	"name_intab":{
+		"message":"Options for tab's box"
+	},
+	"pop_tab":{
+		"message":"Show in Current Tab"
+	},
+	"pop_reconnect":{
+		"message":"Reconnect"
+	},
+	"pop_reload":{
+		"message":"Reload Extension"
+	},
+	"pop_options":{
+		"message":"Options"
+	},
+	"pos_lefttop":{
+		"message":"Top Left"
+	},
+	"pos_righttop":{
+		"message":"Top Right"
+	},
+	"pos_leftbottom":{
+		"message":"Bottom Left"
+	},
+	"pos_rightbottom":{
+		"message":"Right Bottom"
+	},
+	"reg":{
+		"message":"Don't have an account yet?"
 	}
 }

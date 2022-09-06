@@ -3,32 +3,6 @@ main{
 	margin: 8px auto;
 	padding: 8px;
 }
-/*#save,
-#reset{
-	width: 88px;
-	height: 88px;
-	border-radius: 100%;
-	border: 1px;
-	position: fixed;
-	right: 88px;
-	background-size: contain;
-}
-#save:hover,
-#reset:hover{
-	background-color: #0002 !important;
-	cursor: pointer;
-	transition: all .8s ease-in-out;
-}
-#save{
-	top: 88px;
-	background: url(../img/check.png) center no-repeat;
-	background-size: contain;
-}
-#reset{
-	top: 188px;
-	background: url(../img/reset.png) center no-repeat;
-	background-size: contain;
-}*/
 .list{
 	margin: 8px;
 	padding: 8px;
@@ -106,8 +80,8 @@ main{
 input[type=color]{
 	padding: 0;
 	border: none;
-	width: 64px;
-	height: 32px;
+	width: 39px;
+	height: 24px;
 	margin: 0 4px;
 	background: #fff;
 }
@@ -116,6 +90,13 @@ input[type=text]{
 	height: 16px;
 	padding: 2px 8px;
 	margin: 0 4px;
+}
+.range-box{
+	display: inline;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+	padding: 0 12px;
+	margin-left: 8px;
 }
 .iconbox{
 	padding-left: 16px;
@@ -138,6 +119,9 @@ input[type=text]{
 	padding: 4px;
 	font-size: 12px;
 	font-weight: bold;
+}
+.tpname +.tp-wrap{
+	margin-top: -24px;
 }
 .style-padding{
 	padding-left: 16px;
@@ -199,15 +183,8 @@ input[type=text]{
 	opacity: .8;
 }
 .tp-wrap{
-	margin-top: -24px;
-	padding: 0 8px;
-}
-.tp-wrap>div{
-	margin: 2px 0;
-}
-.tp-wrap span{
-	display: inline-block;
-	min-width: 128px;
+	/*margin-top: -24px;*/
+	padding: 0 16px;
 }
 .tp-name{
 	display: inline-block;
@@ -358,4 +335,43 @@ about .about-namewrap{
 	width: 500px;
 	text-align: center;
 	margin: 0 auto;
+}
+.tp-optionlist{
+
+}
+.tp-optionlist>span:first-child{
+	/*height: 24px;*/
+	display: inline-block;
+	min-width: 128px;
+	vertical-align: top;
+}
+.tp-optionlist>span:first-child::after{
+	content: " : ";
+}
+.tp-optionname{
+	border-bottom: 1px solid #eee;
+	padding: 2px 0;
+	margin-top: 16px;
+	text-indent: 16px;
+}
+#tp-customize{
+
+}
+#tp-customize>div{
+	padding: 2px 16px;
+}
+#tp-customize>div span:first-child{
+	display: inline-block;
+	min-width: 128px;
+	vertical-align: top;
+}
+#tp-customize>div span:first-child::after{
+	content: " : ";
+}
+.api-reg{
+	padding-left: 24px;
+}
+.api-reg:link,
+.api-reg:visited{
+	color: #000;
 }

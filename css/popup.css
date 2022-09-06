@@ -1,0 +1,24 @@
+body,main{
+	margin: 0;
+	padding: 0;
+}
+main ul{
+	margin: 0;
+	padding: 0;
+}
+main ul li{
+	display: flex;
+	cursor: pointer;
+	padding: 2px 8px;
+	font-size: 12px;
+	list-style: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 24px;
+	line-height: 24px;
+	box-sizing: content-box;
+}
+main ul li:hover{
+	background-color: #ccc;
+}

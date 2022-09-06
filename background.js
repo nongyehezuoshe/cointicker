@@ -9,22 +9,38 @@ let edition=(function(){
 })();
 console.log(edition);
 let defaultConf={
-	ver:1,
-	edition:"xch",
+	ver:2,
 	apiserve:"okx",
+	iconauto:true,
+	tabauto:true,
+	tabpos:"pos_righttop",
+	tabbgcolor:"#eeeeee",
+	tabopacity:"0.6",
+	tabbordercolor:"#eeeeee",
+	tabboxshadowcolor:"#656565",
+	tabboxshadowx:0,
+	tabboxshadowy:0,
+	tabboxshadowblur:8,
+	tabboxshadowspread:1,
 	okx:{
 		SPOT:[
 			{
 				// name:"XCH-USDT",
 				name:edition=="normal"?"BTC-USDT":edition.toUpperCase()+"-USDT",
-				icon:true,
-				iconcolor:"#ffffff",
-				iconbgcolor:"#ff0000",
-				btbgcolor:"#00ff00",
-				up:"100",
-				dn:"10",
-				tpicon:true,
-				notif:false
+				badge:{
+					badgebgcolor:"#00ff00",
+					tpicon:true,
+					iconcolor:"#ffffff",
+					iconbgcolor:"#ff0000",
+					inicon:true
+				},
+				tab:{
+					intab:true,
+					namecolor:"#00ff00",
+					namebgcolor:"#000000",
+					pricecolor:"#000000",
+					pricebgcolor:"#00ff00"
+				}
 			}
 		]
 	}
@@ -32,25 +48,23 @@ let defaultConf={
 let coin={
 	config:null,
 	wss:null,
+	currentData:null,
+	port:null,
 	socketReopen:()=>{
 		coin.wss.close();
 		// coin.socketOpen();
 	},
 	socketOpen:async ()=>{
 		await coin.getTradingpair(coin.config.apiserve);
-
 		let deamon;
 		coin.wss=new WebSocket("wss://ws.okx.com:8443/ws/v5/public");
 		coin.wss.addEventListener('open', function (event) {
 			var _obj=coin.config[coin.config.apiserve];
 			var _text="";
 			for (var i in _obj){
-				console.log(_obj[i]);
 				var _type=i;
-				console.log(_type);
 				for( var ii in _obj[i]){
 					var _name=_obj[i][ii].name;
-					console.log(_name);
 					var _text=(_text?_text+',':'')+'{"channel": "tickers",'+
 						'"instType": "'+_type+'",'+
 						'"instId": "'+_name+'"}';
@@ -58,9 +72,12 @@ let coin={
 			}
 			coin.wss.send('{"op": "subscribe","args": ['+_text+']}');
 		});
-		coin.wss.addEventListener('message',async function (event) {
-			// console.log(event.data);
-			var _data=event.data=="pong"?event.data:JSON.parse(event.data);
+		coin.wss.addEventListener('message',async function (e) {
+			// console.log(e.data);
+			if(e.data=="pong"){
+				return;
+			}
+			var _data=JSON.parse(e.data);
 			if(_data.event&&_data.event=="subscribe"){return;}
 			var _conf;
 			var _obj=coin.config[coin.config.apiserve][_data.data[0].instType];
@@ -70,8 +87,14 @@ let coin={
 					break;
 				}
 			}
-			chrome.action.setBadgeBackgroundColor({color:_conf.btbgcolor.toUpperCase()});
+			// console.log(_conf)
+			_conf.tab.intab?coin.currentData=_data:null;
 
+			if(!coin.config.iconauto){
+				return;
+			}
+
+			chrome.action.setBadgeBackgroundColor({color:_conf.badge.badgebgcolor.toUpperCase()});
 			var _text=""
 			if(_data.data[0].last.indexOf(".")!=-1){
 				if(_data.data[0].last.indexOf(".")==4){
@@ -90,7 +113,7 @@ let coin={
 				_text=_data.data[0].last.substr(4);
 			}
 
-			if(_conf.icon){
+			if(_conf.badge.tpicon){
 				if(_text.length==0){
 					coin.setIcon(_data.arg.instId.substr(0,_data.arg.instId.indexOf("-")),_conf);
 				}else{
@@ -106,9 +129,11 @@ let coin={
 		});
 		coin.wss.addEventListener('error',e=>{
 			console.log(e);
+			chrome.action.setBadgeText({text:"ERR"});
 			coin.socketOpen();
 		});
 		coin.wss.addEventListener('close',e=>{
+			console.log("close")
 			coin.socketOpen();
 		});
 	},
@@ -117,10 +142,10 @@ let coin={
 		var c=new OffscreenCanvas(32,32)
 		var ctx=c.getContext("2d");
 			
-		ctx.fillStyle = conf.iconbgcolor.toUpperCase(); /*"rgb(200,0,0)";*/
+		ctx.fillStyle = conf.badge.iconbgcolor.toUpperCase(); /*"rgb(200,0,0)";*/
 		ctx.fillRect(0, 0, 32, 32);
 			
-		ctx.fillStyle= conf.iconcolor.toUpperCase(); /*"white";*/
+		ctx.fillStyle= conf.badge.iconcolor.toUpperCase(); /*"white";*/
 		ctx.textAlign="center";
 		ctx.font="bold 14px Arial";
 		ctx.fillText(text,16,14);
@@ -142,9 +167,10 @@ let coin={
 	confLoad:async ()=>{
 		coin.config=await chrome.storage.sync.get();
 		console.log(coin.config)
-		if(!coin.config.ver){
+		if((!coin.config.ver)||(coin.config.ver<2)){
 			console.log("ffff");
 			await chrome.storage.sync.set(defaultConf);
+			coin.config=defaultConf;
 		}
 	},
 	getTradingpair:async (type)=>{
@@ -173,6 +199,9 @@ let coin={
 				})
 				break;
 		}
+	},
+	showInTab:()=>{
+
 	}
 };
 (async ()=>{
@@ -193,21 +222,34 @@ let coin={
 			case"reconnet":
 				coin.socketReopen();
 				break
+			case"reload":
+				chrome.runtime.reload();
+				break
 			case"heartbeat":
 				coin.socketOpen();
+				break;
+			case"showintab":
+				// coin.showInTab();
+				coin.port.postMessage({type:"showintab"});
 				break;
 		}
 		sendResponse();
 	});
 	chrome.runtime.onConnect.addListener(function(port) {
-		console.assert(port.name === "knockknock");
+		coin.port=port;
 		port.onMessage.addListener(function(msg) {
-			if (msg.joke === "Knock knock"){
-				port.postMessage({question: "Who's there?"});
+			if (msg.type&&msg.type=="heartbeat"){
+				if(coin.wss){
+					coin.wss.send("ping");
+				}else{
+					coin.socketOpen();
+				}
+				port.postMessage({type:"heartbeat"});
+			}else if(msg.type&&msg.type=="currentData"){
+				port.postMessage({type:"currentData",data:coin.currentData});
 			}
 		});
 	});
 	chrome.tabs.onActivated.addListener(activeInfo=>{
-		console.log(activeInfo);
 	});
 })();

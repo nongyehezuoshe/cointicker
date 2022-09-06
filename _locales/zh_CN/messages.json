@@ -1,6 +1,6 @@
 {
 	"ext_name":{
-		"message":"行情助手"
+		"message":"加密货币行情助手"
 	},
 	"ext_name_xch":{
 		"message":"行情助手 - Chia(XCH)专版"
@@ -12,7 +12,7 @@
 		"message":"行情助手 - 比特币(BTC)专版"
 	},
 	"ext_des": {
-		"message": "显示加密货币实时行情数据。"
+		"message": "在图标上或者标签页内显示指定加密货币的价格。"
 	},
 	"about_homepage":{
 		"message":"主页："
@@ -47,23 +47,14 @@
 	"panel_api":{
 		"message":"选择行情信息服务商"
 	},
+	"panel_customize":{
+		"message":"个性化选项"
+	},
 	"panel_tpadd":{
 		"message":"添加交易对"
 	},
 	"panel_tpedit":{
 		"message":"管理交易对"
-	},
-	"color_main":{
-		"message":"主行情背景颜色："
-	},
-	"color_ext":{
-		"message":"扩展行情字体颜色："
-	},
-	"color_extbg":{
-		"message":"扩展行情背景颜色："
-	},
-	"icon":{
-		"message":"无扩展行情数据时，显示交易对代码"
 	},
 	"okx_SPOT":{
 		"message":"币币"
@@ -92,7 +83,100 @@
 	"btn_about":{
 		"message":"关于"
 	},
-	"btn_recon":{
+	"opt_iconauto":{
+		"message":"自动在图标中显示行情信息"
+	},
+	"opt_tabauto":{
+		"message":"自动在标签页中显示行情信息"
+	},
+	"opt_tabpos":{
+		"message":"默认位置"
+	},
+	"opt_tabbgcolor":{
+		"message":"背景颜色"
+	},
+	"opt_tabbordercolor":{
+		"message":"边框颜色"
+	},
+	"opt_tabopacity":{
+		"message":"不透明度"
+	},
+	"opt_tabboxshadowcolor":{
+		"message":"盒子阴影颜色"
+	},
+	"opt_tabboxshadowx":{
+		"message":"盒子阴影的x轴偏移量（offset-x）"
+	},
+	"opt_tabboxshadowy":{
+		"message":"盒子阴影的x轴偏移量（offset-y）"
+	},
+	"opt_tabboxshadowblur":{
+		"message":"盒子阴影的模糊半径（blur-radius）"
+	},
+	"opt_tabboxshadowspread":{
+		"message":"盒子阴影的扩散半径（spread-radius）"
+	},
+	"opt_badgebgcolor":{
+		"message":"主行情背景颜色"
+	},
+	"opt_tpicon":{
+		"message":"无扩展行情数据时，显示交易对代码"
+	},
+	"opt_iconcolor":{
+		"message":"扩展行情字体颜色"
+	},
+	"opt_iconbgcolor":{
+		"message":"扩展行情背景颜色"
+	},
+	"opt_inicon":{
+		"message":"在图标中显示当前交易对行情信息"
+	},
+	"opt_namecolor":{
+		"message":"交易对名称字体颜色"
+	},
+	"opt_namebgcolor":{
+		"message":"交易对名称背景颜色"
+	},
+	"opt_pricecolor":{
+		"message":"行情信息字体颜色"
+	},
+	"opt_pricebgcolor":{
+		"message":"行情信息背景颜色"
+	},
+	"opt_intab":{
+		"message":"在标签页中显示当前交易对行情信息"
+	},
+	"name_inbadge":{
+		"message":"图标选项"
+	},
+	"name_intab":{
+		"message":"标签页内盒子选项"
+	},
+	"pop_tab":{
+		"message":"在当前标签页内显示"
+	},
+	"pop_reconnect":{
 		"message":"重新连接"
+	},
+	"pop_reload":{
+		"message":"重启扩展程序"
+	},
+	"pop_options":{
+		"message":"选项"
+	},
+	"pos_lefttop":{
+		"message":"左上角"
+	},
+	"pos_righttop":{
+		"message":"右上角"
+	},
+	"pos_leftbottom":{
+		"message":"左下角"
+	},
+	"pos_rightbottom":{
+		"message":"右下角"
+	},
+	"reg":{
+		"message":"还没有账号?"
 	}
 }

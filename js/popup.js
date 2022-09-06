@@ -6,8 +6,14 @@ let coin={
 	handleEvent:e=>{
 		switch(e.type){
 			case"click":
-				if(e.target.id="re-connect"){
-					coin.reConnet();
+				if(e.target.id=="li-reconnect"){
+					coin.reconnect();
+				}else if(e.target.id=="li-options"){
+					coin.options();
+				}else if(e.target.id=="li-tab"){
+					coin.tab();
+				}else if(e.target.id=="li-reload"){
+					coin.reload();
 				}
 				break
 		}
@@ -18,8 +24,24 @@ let coin={
 			doms[i].innerText=chrome.i18n.getMessage(doms[i].dataset.i18n);
 		}
 	},
-	reConnet:async ()=>{
+	reconnect:async ()=>{
 		await chrome.runtime.sendMessage({type:"reconnet",value:coin.config},(response)=>{
+			console.log(response);
+		});
+		window.close();
+	},
+	options:()=>{
+		chrome.tabs.create({url:"../html/options.html"})
+		window.close();
+	},
+	tab:async ()=>{
+		await chrome.runtime.sendMessage({type:"showintab",value:coin.config},(response)=>{
+			console.log(response);
+		});
+		window.close();
+	},
+	reload:async ()=>{
+		await chrome.runtime.sendMessage({type:"reload",value:coin.config},(response)=>{
 			console.log(response);
 		});
 		window.close();
