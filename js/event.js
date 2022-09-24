@@ -98,6 +98,13 @@
 
 			_main.appendChild(_btn)
 			_wrap.appendChild(_main);
+
+			if(coin.config.tabheartbeat){
+				var _reading=coin.UI.domCreate("reading",null,"	width: 4px;height: 4px;margin: 0 auto;display: block;background-color: #ff0000;border-radius: 100%;position: absolute;left: 4px;bottom: 6px;opacity:0.3;");
+				_wrap.appendChild(_reading);
+			}
+
+
 			_flag?document.body.appendChild(_wrap):null;
 			coin.dom=_wrap;
 
@@ -155,8 +162,21 @@
 		},
 		showData:(data)=>{
 			// console.log(data);
-			var _dom=coin.dom.querySelector("[data-code="+data.data[0].instId+"] >.coin-price");
-			_dom.innerText=data.data[0].last;
+			for(var i in data){
+				var _dom=coin.dom.querySelector("[data-code="+data[i].instId+"] >.coin-price");
+				_dom.innerText=data[i].last;
+			}
+			if(coin.config.tabheartbeat){
+				var _reading=coin.dom.querySelector("reading");
+				var _color=["rgb(255, 0, 0)","rgb(0, 255, 0)","rgb(0, 0, 255)"]
+				// console.log(_reading)
+				for(var i=0;i<_color.length;i++){
+					if(getComputedStyle(_reading)["background-color"]==_color[i]){
+						_reading.style.cssText+="background-color:"+(i==2?_color[0]:_color[i+1])
+						break;
+					}
+				}
+			}
 		},
 		close:e=>{
 			if(coin.timer){window.clearInterval(coin.timer);}
@@ -175,11 +195,11 @@
 			port = chrome.runtime.connect({name: "knockknock"});
 			port.postMessage({type:"heartbeat"});
 			if(coin.config.tabauto){
-				console.log("d")
+				// console.log("d")
 				port.postMessage({type:"currentData"});
 			}
 			port.onMessage.addListener(function(msg) {
-				console.log(msg)
+				// console.log(msg)
 				if(msg.type&&msg.type=="showintab"){
 					coin.dom?null:coin.initUI();
 					port.postMessage({type:"currentData"});
@@ -190,7 +210,7 @@
 					if(coin.timer){window.clearInterval(coin.timer);}
 					coin.timer=window.setInterval(()=>{
 						port.postMessage({type:"currentData"});
-					},200)
+					},coin.config.tabinterval||500)
 				}else{
 					console.log(msg)
 					if(coin.beattimer){window.clearInterval(coin.beattimer);}

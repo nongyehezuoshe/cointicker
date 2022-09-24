@@ -178,5 +178,11 @@
 	},
 	"reg":{
 		"message":"Don't have an account yet?"
+	},
+	"opt_tabheartbeat":{
+		"message":"Show communication signal"
+	},
+	"opt_tabinterval":{
+		"message":"Communication interval with extension process"
 	}
 }

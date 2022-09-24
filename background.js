@@ -22,6 +22,8 @@ let defaultConf={
 	tabboxshadowy:0,
 	tabboxshadowblur:8,
 	tabboxshadowspread:1,
+	tabheartbeat:false,
+	tabinterval:500,
 	okx:{
 		SPOT:[
 			{
@@ -48,7 +50,7 @@ let defaultConf={
 let coin={
 	config:null,
 	wss:null,
-	currentData:null,
+	currentData:{},
 	port:null,
 	socketReopen:()=>{
 		coin.wss.close();
@@ -79,43 +81,48 @@ let coin={
 			}
 			var _data=JSON.parse(e.data);
 			if(_data.event&&_data.event=="subscribe"){return;}
+			_data=_data.data[0];
+			
 			var _conf;
-			var _obj=coin.config[coin.config.apiserve][_data.data[0].instType];
+			var _obj=coin.config[coin.config.apiserve][_data.instType];
 			for(var i in _obj){
-				if(_obj[i].name==_data.data[0].instId){
+				if(_obj[i].name==_data.instId){
 					_conf=_obj[i];
 					break;
 				}
 			}
 			// console.log(_conf)
-			_conf.tab.intab?coin.currentData=_data:null;
 
-			if(!coin.config.iconauto){
-				return;
+			if(_conf.tab.intab){
+				// if(!coin.currentData[_data.instId]){coin.currentData[_data.instId]=""}
+				coin.currentData[_data.instId]="";
+				coin.currentData[_data.instId]=_data;
 			}
+
+			if(!coin.config.iconauto||!_conf.badge.inicon){return;}
 
 			chrome.action.setBadgeBackgroundColor({color:_conf.badge.badgebgcolor.toUpperCase()});
 			var _text=""
-			if(_data.data[0].last.indexOf(".")!=-1){
-				if(_data.data[0].last.indexOf(".")==4){
-					chrome.action.setBadgeText({text:_data.data[0].last.substr(0,4)});
-					_text=_data.data[0].last.substr(5);
+			if(_data.last.indexOf(".")!=-1){
+				if(_data.last.indexOf(".")==4){
+					chrome.action.setBadgeText({text:_data.last.substr(0,4)});
+					_text=_data.last.substr(5);
 				}else{
-					if(_data.data[0].last.indexOf(".")<4){
-						chrome.action.setBadgeText({text:_data.data[0].last.substr(0,5)});
-						_text=_data.data[0].last.substr(5);
+					if(_data.last.indexOf(".")<4){
+						chrome.action.setBadgeText({text:_data.last.substr(0,5)});
+						_text=_data.last.substr(5);
 					}else{
-						chrome.action.setBadgeText({text:_data.data[0].last.substr(0,4)});
-						_text=_data.data[0].last.substr(4);
+						chrome.action.setBadgeText({text:_data.last.substr(0,4)});
+						_text=_data.last.substr(4);
 					}
 				}
 			}else{
-				_text=_data.data[0].last.substr(4);
+				_text=_data.last.substr(4);
 			}
 
 			if(_conf.badge.tpicon){
 				if(_text.length==0){
-					coin.setIcon(_data.arg.instId.substr(0,_data.arg.instId.indexOf("-")),_conf);
+					coin.setIcon(_data.instId.substr(0,_data.instId.indexOf("-")),_conf);
 				}else{
 					coin.setIcon(_text,_conf);
 				}
@@ -223,6 +230,7 @@ let coin={
 				coin.socketReopen();
 				break
 			case"reload":
+				console.log("reload")
 				chrome.runtime.reload();
 				break
 			case"heartbeat":

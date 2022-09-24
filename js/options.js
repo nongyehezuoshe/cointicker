@@ -1,10 +1,8 @@
 let coin={
 	config:null,
 	verurl:{
-		edition_normal:["","",""],
-		edition_chia:["https://chrome.google.com/webstore/detail/omchhbokcmpfemeeifmlbighcbnomogk","https://microsoftedge.microsoft.com/addons/detail/pgoailjoeoddmgppjbbhclceehdicpoh",""],
-		edition_eth:["","",""],
-		edition_btc:["","",""],
+		edition_normal:["https://chrome.google.com/webstore/detail/ceeonebnbifjbifjepmbglncplifofoj","https://microsoftedge.microsoft.com/addons/detail/hmcdiiieofoifocphlddfkneikhmfboa",""],
+		edition_chia:["https://chrome.google.com/webstore/detail/omchhbokcmpfemeeifmlbighcbnomogk","https://microsoftedge.microsoft.com/addons/detail/pgoailjoeoddmgppjbbhclceehdicpoh",""]
 	},
 	apiserve:[
 		{
@@ -83,7 +81,7 @@ let coin={
 		var domName=document.querySelector(".about-name");
 			domName.innerText=chrome.runtime.getManifest().name;
 
-		var arrayVer=["edition_normal","edition_chia","edition_eth","edition_btc"]
+		var arrayVer=["edition_normal","edition_chia"]
 		var allDivs=document.querySelectorAll(".about-editionlistwrap");
 		for(var i=0;i<allDivs.length;i++){
 			var _vers=allDivs[i].querySelectorAll("div");
@@ -257,8 +255,8 @@ let coin={
 			console.log(conftype);
 			console.log(conf)
 			var _dom=coin.domCreate("div"),
-				_check=coin.domCreate("input","check-"+conf,null,null,null,"checkbox",_conf[conftype][conf],null,[["conftype",conftype],["conf",conf]]),
-				_domIcon_label=coin.domCreate("label",null,null,coin.i18n("opt_"+conf),"check-"+conf);
+				_check=coin.domCreate("input",data/*"check-"+conf*/,null,null,null,"checkbox",_conf[conftype][conf],null,[["conftype",conftype],["conf",conf]]),
+				_domIcon_label=coin.domCreate("label",null,null,coin.i18n("opt_"+conf),data/*"check-"+conf*/);
 			_dom.appendChild(_check);
 			_dom.appendChild(_domIcon_label);
 			return _dom;
@@ -296,8 +294,8 @@ let coin={
 				_domBadge.appendChild(_color("badge","badgebgcolor"));
 				_domBadge.appendChild(_color("badge","iconcolor"));
 				_domBadge.appendChild(_color("badge","iconbgcolor"));
-				_domBadge.appendChild(_checkbox("badge","tpicon"));
-				_domBadge.appendChild(_checkbox("badge","inicon"));
+				_domBadge.appendChild(_checkbox("badge","tpicon","check-tpicon-"+i+"-"+ii));
+				_domBadge.appendChild(_checkbox("badge","inicon","check-inicon-"+i+"-"+ii));
 				_tpBox.appendChild(_domBadge);
 
 				var _domTab=coin.domCreate("div",null,"tp-wrap");
@@ -308,7 +306,7 @@ let coin={
 				_domTab.appendChild(_color("tab","namebgcolor"));
 				_domTab.appendChild(_color("tab","pricecolor"));
 				_domTab.appendChild(_color("tab","pricebgcolor"));
-				_domTab.appendChild(_checkbox("tab","intab"));
+				_domTab.appendChild(_checkbox("tab","intab","check-intab-"+i+"-"+ii));
 				_tpBox.appendChild(_domTab);
 
 				_domList.appendChild(_tpBox);
@@ -319,21 +317,25 @@ let coin={
 		var _doms=document.querySelectorAll("#tp-customize>div *[data-conf]");
 		console.log(_doms)
 		for(var i=0;i<_doms.length;i++){
+			_conf=coin.config[_doms[i].dataset.conf];
+			console.log(_conf)
+			if(_conf===undefined&&_doms[i].dataset.conf=="tabinterval"){
+				_conf=500;
+			}
 			if(_doms[i].nodeName.toLowerCase()=="select"){
-				_doms[i].value=coin.config[_doms[i].dataset.conf];
+				_doms[i].value=_conf;
 				continue;
 			}
 			switch(_doms[i].type.toLowerCase()){
 				case"color":
-					_doms[i].value=coin.config[_doms[i].dataset.conf];
+					_doms[i].value=_conf;
 					break;
 				case"checkbox":
-					_doms[i].checked=coin.config[_doms[i].dataset.conf];
+					_doms[i].checked=_conf;
 					break
 				case"range":
-					console.log("color")
-					_doms[i].value=coin.config[_doms[i].dataset.conf];
-					_doms[i].parentNode.querySelector(".range-box").innerText=coin.config[_doms[i].dataset.conf];
+					_doms[i].value=_conf;
+					_doms[i].parentNode.querySelector(".range-box").innerText=_doms[i].value;
 					break;
 			}
 		}

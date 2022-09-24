@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
-	"name": "__MSG_ext_name_xch__",
-	"version": "2.0.0.0",
+	"name": "__MSG_ext_name__",
+	"version": "2.1.0.0",
 	"description": "__MSG_ext_des__",
 	"default_locale": "en",
 	"action": {
@@ -26,7 +26,7 @@
 			"matches": [ "<all_urls>" ]
 		}
 	],
-	"permissions": ["activeTab","storage"],
+	"permissions": ["storage"],
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],

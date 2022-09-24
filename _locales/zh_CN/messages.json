@@ -178,5 +178,11 @@
 	},
 	"reg":{
 		"message":"还没有账号?"
+	},
+	"opt_tabheartbeat":{
+		"message":"显示通信提示"
+	},
+	"opt_tabinterval":{
+		"message":"与扩展后台进程通信的间隔时间"
 	}
 }

@@ -375,3 +375,11 @@ about .about-namewrap{
 .api-reg:visited{
 	color: #000;
 }
+reading{
+	width: 8px;
+	height: 8px;
+	margin: 0 auto;
+	display: block;
+	background-color: red;
+	border-radius: 100%;
+}
