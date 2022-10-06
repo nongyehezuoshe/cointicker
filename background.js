@@ -136,8 +136,13 @@ let coin={
 		});
 		coin.wss.addEventListener('error',e=>{
 			console.log(e);
-			chrome.action.setBadgeText({text:"ERR"});
-			coin.socketOpen();
+			chrome.action.setBadgeText({text:"Err"});
+			// if(_conf.tab.intab){
+				for(var i in coin.currentData){
+					coin.currentData[i]="";
+				}
+			// }
+			// coin.socketOpen();
 		});
 		coin.wss.addEventListener('close',e=>{
 			console.log("close")

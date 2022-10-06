@@ -163,8 +163,8 @@
 		showData:(data)=>{
 			// console.log(data);
 			for(var i in data){
-				var _dom=coin.dom.querySelector("[data-code="+data[i].instId+"] >.coin-price");
-				_dom.innerText=data[i].last;
+				var _dom=coin.dom.querySelector("[data-code="+i/*data[i].instId*/+"] >.coin-price");
+				_dom.innerText=data[i].last||"Err";
 			}
 			if(coin.config.tabheartbeat){
 				var _reading=coin.dom.querySelector("reading");
