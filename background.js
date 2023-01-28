@@ -148,6 +148,7 @@ let coin={
 			console.log("close")
 			coin.socketOpen();
 		});
+		
 	},
 	setIcon:(text,conf)=>{
 		// console.log(text)
@@ -195,6 +196,7 @@ let coin={
 					socket.send('{"op": "subscribe","args": [{"channel": "instruments","instType": "SPOT"},{"channel": "instruments","instType": "MARGIN"},{"channel": "instruments","instType": "SWAP"},{"channel": "instruments","instType": "FUTURES"},{"channel": "instruments","instType": "OPTION"}]}');
 				});
 				socket.addEventListener('message',async function (event) {
+					console.log(event);
 					var _data=JSON.parse(event.data);
 					_conf[type][_data.arg.instType]=[];
 					for(var i in _data.data){

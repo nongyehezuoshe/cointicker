@@ -1,5 +1,14 @@
 let coin={
 	config:null,
+	edition:(function(){
+		var _editions=["xch","eth","btc"];
+		for(var i=0;i<_editions.length;i++){
+			if(chrome.runtime.getManifest().name.toLowerCase().indexOf(_editions[i])!=-1){
+				return _editions[i];
+			}
+		}
+		return "normal";
+	})(),
 	verurl:{
 		edition_normal:["https://chrome.google.com/webstore/detail/ceeonebnbifjbifjepmbglncplifofoj","https://microsoftedge.microsoft.com/addons/detail/hmcdiiieofoifocphlddfkneikhmfboa",""],
 		edition_chia:["https://chrome.google.com/webstore/detail/omchhbokcmpfemeeifmlbighcbnomogk","https://microsoftedge.microsoft.com/addons/detail/pgoailjoeoddmgppjbbhclceehdicpoh",""]
@@ -17,7 +26,8 @@ let coin={
 		}*/
 	],
 	init:(config)=>{
-		console.log(config);
+		console.log(coin.edition);
+
 		coin.config=config;
 		coin.initAPI();
 		coin.initTradingpair("okx");
@@ -212,7 +222,7 @@ let coin={
 	tabSwitch:(dom)=>{
 		var tabs=document.querySelectorAll("#tp-tab>li"),
 			tab=!dom?tabs[0]:dom;
-		console.log(tab)
+		// console.log(tab)
 		var lists=document.querySelectorAll(".tp-list"),
 			list=document.querySelector("#list"+tab.id.substr(tab.id.indexOf("-")));
 		for(var i=0;i<tabs.length;i++){
@@ -252,8 +262,6 @@ let coin={
 			return _dom;
 		}
 		var _checkbox=(conftype,conf,data)=>{
-			console.log(conftype);
-			console.log(conf)
 			var _dom=coin.domCreate("div"),
 				_check=coin.domCreate("input",data/*"check-"+conf*/,null,null,null,"checkbox",_conf[conftype][conf],null,[["conftype",conftype],["conf",conf]]),
 				_domIcon_label=coin.domCreate("label",null,null,coin.i18n("opt_"+conf),data/*"check-"+conf*/);
@@ -268,12 +276,12 @@ let coin={
 		domTab.innerText="";
 		
 		for(var i in coin.config[coin.config.apiserve]){
-			console.log(i)
+			// console.log(i)
 			domTab.appendChild(coin.domCreate("li","tab-"+i,"tp-li",coin.i18n("okx_"+i)));
 			var _domList=coin.domCreate("div","list-"+i,"tp-list",null,null,null,null,null,[["group",i]]);
 			domGroup.appendChild(_domList);
 
-			console.log(coin.config[coin.config.apiserve][i])
+			// console.log(coin.config[coin.config.apiserve][i])
 
 			for(var ii in coin.config[coin.config.apiserve][i]){
 				var _name=coin.config[coin.config.apiserve][i][ii].name,
@@ -315,10 +323,10 @@ let coin={
 	},
 	initCustomizeOpt:()=>{
 		var _doms=document.querySelectorAll("#tp-customize>div *[data-conf]");
-		console.log(_doms)
+		// console.log(_doms)
 		for(var i=0;i<_doms.length;i++){
 			_conf=coin.config[_doms[i].dataset.conf];
-			console.log(_conf)
+			// console.log(_conf)
 			if(_conf===undefined&&_doms[i].dataset.conf=="tabinterval"){
 				_conf=500;
 			}
@@ -347,7 +355,7 @@ let coin={
 		// return
 		var dom=document.getElementById("tp-add");
 		var _conf=await coin.getTradingpair(type);
-		console.log(type)
+		// console.log(type)
 		for(var i in _conf){
 			if(_conf[i].length==0){continue;}
 			var _div=document.createElement("div");
@@ -367,7 +375,46 @@ let coin={
 	},
 	getTradingpair:async (type)=>{
 		var _return=await chrome.storage.local.get();
-		return _return[type];
+		if(_return[type]){
+			return _return[type];			
+		}else{
+			console.log("getpair");
+			var _conf={};
+				_conf[type]={};
+			switch(type){
+				case"okx":
+					_option_flag=0;
+					_option_array=["BTC-USD","ETH-USD"];
+					var get_instrument=async type=>{
+						var _url="https://www.okx.com/api/v5/public/instruments?instType="+type;
+						if(type=="OPTION"){
+							_url="https://www.okx.com/api/v5/public/instruments?instType="+type+"&instFamily="+_option_array[_option_flag];
+							_option_flag+=1;
+						}
+						var xx=await fetch(_url).then(res=>res.json());
+						return xx;
+					}
+					var _type_array=["SPOT","MARGIN","SWAP","FUTURES","OPTION","OPTION"];
+					for(var i=0;i<_type_array.length;i++){
+						_conf[type][_type_array[i]]=_conf[type][_type_array[i]]||[];
+						var _data=await get_instrument(_type_array[i]);
+						console.log(_data)
+						for(var ii=0;_data&&ii<_data.data.length;ii++){
+							if(coin.edition!="normal"){
+								if(_data.data[ii].instId.split("-")[0].toLowerCase()==coin.edition){
+									_conf[type][_type_array[i]].push(_data.data[ii].instId);
+								}
+							}else{
+								_conf[type][_type_array[i]].push(_data.data[ii].instId);
+							}
+						}
+					}
+					await chrome.storage.local.set(_conf);
+					break;
+			}
+			return _conf[type];
+		}
+
 	},
 	dataInit:()=>{
 		var doms=document.querySelectorAll(".data-init");
