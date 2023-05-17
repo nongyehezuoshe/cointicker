@@ -2,15 +2,6 @@
 	"ext_name":{
 		"message":"Cryptocurrency Ticker"
 	},
-	"ext_name_xch":{
-		"message":"Cryptocurrency Ticker - Chia(XCH) Edition"
-	},
-	"ext_name_eth":{
-		"message":"Cryptocurrency Ticker - Ethereum(ETH) Edition"
-	},
-	"ext_name_btc":{
-		"message":"Cryptocurrency Ticker - Bitcoin(BTC) Edition"
-	},
 	"ext_des": {
 		"message": "Show the price of specified cryptocurrency in badge or tabs."
 	},
@@ -184,5 +175,29 @@
 	},
 	"opt_tabinterval":{
 		"message":"Communication interval with extension process"
+	},
+	"hlprice_h":{
+		"message":"high"
+	},
+	"hlprice_l":{
+		"message":"low"
+	},
+	"volume_vol":{
+		"message":"vol"
+	},
+	"volume_ccy":{
+		"message":"turnover"
+	},
+	"opt_hlpricecolor":{
+		"message":"24h Highest/Lowest price Color"
+	},
+	"opt_hlpricebgcolor":{
+		"message":"24h Highest/Lowest price Backgroud Color"
+	},
+	"opt_volumecolor":{
+		"message":"24h trading volume Color"
+	},
+	"opt_volumebgcolor":{
+		"message":"24h trading volume Backgroud Color"
 	}
 }

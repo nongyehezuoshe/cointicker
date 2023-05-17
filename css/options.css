@@ -105,20 +105,25 @@ input[type=text]{
 	padding-left: 16px;
 }
 .tpbox{
-	border: 1px solid #ccc;
+/*	border: 1px solid #ccc;*/
 	padding: 4px;
 	border-radius: 4px;
-	margin: 16px 0;
+	margin: 16px;
+	background-color: #bab4a3;
+	display: inline-block;
 }
 .tpname{
 	display: inline-block;
 	position: relative;
-	left: 4px;
+	left: -4px;
 	top: -18px;
-	background: #fff;
-	padding: 4px;
-	font-size: 12px;
+/*	background: #f7b808;*/
+	background-color: #bab4a3;
+	color: #fff;
+	padding: 4px 16px;
+	font-size: 14px;
 	font-weight: bold;
+	border-radius: 10px;
 }
 .tpname +.tp-wrap{
 	margin-top: -24px;
@@ -146,7 +151,7 @@ input[type=text]{
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	font-size: 12px;
+	font-size: 16px;
 	padding: 2px 8px;
 	margin: 0 8px;
 	font-weight: bold;
@@ -167,8 +172,12 @@ input[type=text]{
 .btn-del{
 	display: inline-block;
 	position: relative;
-	right: -826px;
-	top: -3px;
+	float: right;
+/*	right: -826px;*/
+/*	left: 206px;*/
+/*	top: -3px;*/
+	right: 0;
+	top: 0;
 	background: #f70606;
 	padding: 2px 6px;
 	font-size: 12px;
@@ -184,7 +193,7 @@ input[type=text]{
 }
 .tp-wrap{
 	/*margin-top: -24px;*/
-	padding: 0 16px;
+	padding: 8px 8px;
 }
 .tp-name{
 	display: inline-block;
@@ -200,7 +209,7 @@ input[type=text]{
 	margin: 0 8px;
 }
 .btn-right{
-	right: 64px;
+	left: 64px;
 	font-weight: bold;
 	padding-right: 16px;
 	min-width: 120px;
@@ -382,4 +391,32 @@ reading{
 	display: block;
 	background-color: red;
 	border-radius: 100%;
+}
+
+
+.tp-wrap{
+	display: none;
+}
+.tpwrap-ul{
+	list-style-type: none;
+	padding: 0;
+	padding-top: 2px;
+	margin: 0;
+	display: flex;
+/*	background-color: #f7b80860;*/
+	margin-top: -18px;
+}
+.tpwrap-li{
+	padding: 2px 8px;
+	margin: 0;
+	cursor: pointer;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+}
+.tpwrap-current,
+.tp-wrap-current{
+	color: #000;
+	background-color: #fff;
+	display: block;
 }

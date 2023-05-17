@@ -1,13 +1,3 @@
-let edition=(function(){
-	var _editions=["xch","eth","btc"];
-	for(var i=0;i<_editions.length;i++){
-		if(chrome.runtime.getManifest().name.toLowerCase().indexOf(_editions[i])!=-1){
-			return _editions[i];
-		}
-	}
-	return "normal";
-})();
-console.log(edition);
 let defaultConf={
 	ver:2,
 	apiserve:"okx",
@@ -22,13 +12,12 @@ let defaultConf={
 	tabboxshadowy:0,
 	tabboxshadowblur:8,
 	tabboxshadowspread:1,
-	tabheartbeat:false,
+	tabheartbeat:true,
 	tabinterval:500,
 	okx:{
 		SPOT:[
 			{
-				// name:"XCH-USDT",
-				name:edition=="normal"?"BTC-USDT":edition.toUpperCase()+"-USDT",
+				name:"XCH-USDT",
 				badge:{
 					badgebgcolor:"#00ff00",
 					tpicon:true,
@@ -41,7 +30,53 @@ let defaultConf={
 					namecolor:"#00ff00",
 					namebgcolor:"#000000",
 					pricecolor:"#000000",
-					pricebgcolor:"#00ff00"
+					pricebgcolor:"#00ff00",
+					hlpricecolor:"#ffffff",
+					hlpricebgcolor:"#d55958",
+					volumecolor:"#ffffff",
+					volumebgcolor:"#8a0500"
+				}
+			},
+			{
+				name:"ETH-USDT",
+				badge:{
+					badgebgcolor:"#6400fa",
+					tpicon:true,
+					iconcolor:"#ffffff",
+					iconbgcolor:"#0055ff",
+					inicon:false
+				},
+				tab:{
+					intab:true,
+					namecolor:"#ffffff",
+					namebgcolor:"#6400fa",
+					pricecolor:"#ffffff",
+					pricebgcolor:"#0055ff",
+					hlpricecolor:"#ffffff",
+					hlpricebgcolor:"#20ac6d",
+					volumecolor:"#ffffff",
+					volumebgcolor:"#74119a"
+				}
+			},
+			{
+				name:"BTC-USDT",
+				badge:{
+					badgebgcolor:"#ef8e19",
+					tpicon:true,
+					iconcolor:"#ffffff",
+					iconbgcolor:"#0055ff",
+					inicon:false
+				},
+				tab:{
+					intab:true,
+					namecolor:"#8b008b",
+					namebgcolor:"#ef8e19",
+					pricecolor:"#ffffff",
+					pricebgcolor:"#8b5a2b",
+					hlpricecolor:"#ffffff",
+					hlpricebgcolor:"#8b008b",
+					volumecolor:"#ffffff",
+					volumebgcolor:"#006400"
 				}
 			}
 		]
@@ -57,7 +92,7 @@ let coin={
 		// coin.socketOpen();
 	},
 	socketOpen:async ()=>{
-		await coin.getTradingpair(coin.config.apiserve);
+		// await coin.getTradingpair(coin.config.apiserve);
 		let deamon;
 		coin.wss=new WebSocket("wss://ws.okx.com:8443/ws/v5/public");
 		coin.wss.addEventListener('open', function (event) {
@@ -65,24 +100,27 @@ let coin={
 			var _text="";
 			for (var i in _obj){
 				var _type=i;
+				console.log(_type);
 				for( var ii in _obj[i]){
 					var _name=_obj[i][ii].name;
-					var _text=(_text?_text+',':'')+'{"channel": "tickers",'+
+					var _text=(_text?_text+',':'')+
+						'{"channel": "tickers",'+
 						'"instType": "'+_type+'",'+
 						'"instId": "'+_name+'"}';
 				}
 			}
 			coin.wss.send('{"op": "subscribe","args": ['+_text+']}');
+			// coin.wss.send('{"op": "subscribe","args": [{"channel": "instruments","instType": "SWAP"}]}');
 		});
 		coin.wss.addEventListener('message',async function (e) {
-			// console.log(e.data);
+			// console.log(e);
 			if(e.data=="pong"){
 				return;
 			}
 			var _data=JSON.parse(e.data);
 			if(_data.event&&_data.event=="subscribe"){return;}
 			_data=_data.data[0];
-			
+
 			var _conf;
 			var _obj=coin.config[coin.config.apiserve][_data.instType];
 			for(var i in _obj){
@@ -91,15 +129,18 @@ let coin={
 					break;
 				}
 			}
-			// console.log(_conf)
 
-			if(_conf.tab.intab){
+			// console.log(_data)
+			
+			if(_conf?.tab?.intab){
+			// if(_conf.tab.intab){
 				// if(!coin.currentData[_data.instId]){coin.currentData[_data.instId]=""}
 				coin.currentData[_data.instId]="";
 				coin.currentData[_data.instId]=_data;
 			}
 
-			if(!coin.config.iconauto||!_conf.badge.inicon){return;}
+			// if(!coin.config.iconauto||!_conf.badge.inicon){return;}
+			if(!coin.config.iconauto||(!_conf?.badge?.inicon)){return;}
 
 			chrome.action.setBadgeBackgroundColor({color:_conf.badge.badgebgcolor.toUpperCase()});
 			var _text=""
@@ -148,7 +189,6 @@ let coin={
 			console.log("close")
 			coin.socketOpen();
 		});
-		
 	},
 	setIcon:(text,conf)=>{
 		// console.log(text)
@@ -187,30 +227,32 @@ let coin={
 		}
 	},
 	getTradingpair:async (type)=>{
-		var _conf={};
+		var _conf=await chrome.storage.local.get();
 			_conf[type]={};
 		switch(type){
 			case"okx":
-				var socket=new WebSocket("wss://ws.okx.com:8443/ws/v5/public");
-				socket.addEventListener('open', function (event) {
-					socket.send('{"op": "subscribe","args": [{"channel": "instruments","instType": "SPOT"},{"channel": "instruments","instType": "MARGIN"},{"channel": "instruments","instType": "SWAP"},{"channel": "instruments","instType": "FUTURES"},{"channel": "instruments","instType": "OPTION"}]}');
-				});
-				socket.addEventListener('message',async function (event) {
-					console.log(event);
-					var _data=JSON.parse(event.data);
-					_conf[type][_data.arg.instType]=[];
-					for(var i in _data.data){
-						if(edition!="normal"){
-							if(_data.data[i].instId.split("-")[0].toLowerCase()==edition){
-								_conf[type][_data.arg.instType].push(_data.data[i].instId);
-							}
-						}else{
-							_conf[type][_data.arg.instType].push(_data.data[i].instId);
-						}
+				_option_flag=0;
+				_option_array=["BTC-USD","ETH-USD"];
+				var get_instrument=async type=>{
+					var _url="https://www.okx.com/api/v5/public/instruments?instType="+type;
+					if(type=="OPTION"){
+						_url="https://www.okx.com/api/v5/public/instruments?instType="+type+"&instFamily="+_option_array[_option_flag];
+						_option_flag+=1;
 					}
-					// await chrome.storage.local.clear();
-					await chrome.storage.local.set(_conf);
-				})
+					var xx=await fetch(_url).then(res=>res.json());
+					return xx;
+				}
+				var _type_array=["SPOT","SWAP"/*,"MARGIN"*/,"FUTURES","OPTION","OPTION"];
+				for(var i=0;i<_type_array.length;i++){
+					_conf[type][_type_array[i]]=_conf[type][_type_array[i]]||[];
+					var _data=await get_instrument(_type_array[i]);
+					console.log(_data)
+					for(var ii=0;_data&&ii<_data.data.length;ii++){
+						_conf[type][_type_array[i]].push(_data.data[ii].instId);
+					}
+				}
+				await chrome.storage.local.clear();
+				await chrome.storage.local.set(_conf);
 				break;
 		}
 	},
@@ -267,4 +309,5 @@ let coin={
 	});
 	chrome.tabs.onActivated.addListener(activeInfo=>{
 	});
+	await coin.getTradingpair(coin.config.apiserve);
 })();

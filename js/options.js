@@ -1,24 +1,11 @@
 let coin={
 	config:null,
-	edition:(function(){
-		var _editions=["xch","eth","btc"];
-		for(var i=0;i<_editions.length;i++){
-			if(chrome.runtime.getManifest().name.toLowerCase().indexOf(_editions[i])!=-1){
-				return _editions[i];
-			}
-		}
-		return "normal";
-	})(),
-	verurl:{
-		edition_normal:["https://chrome.google.com/webstore/detail/ceeonebnbifjbifjepmbglncplifofoj","https://microsoftedge.microsoft.com/addons/detail/hmcdiiieofoifocphlddfkneikhmfboa",""],
-		edition_chia:["https://chrome.google.com/webstore/detail/omchhbokcmpfemeeifmlbighcbnomogk","https://microsoftedge.microsoft.com/addons/detail/pgoailjoeoddmgppjbbhclceehdicpoh",""]
-	},
 	apiserve:[
 		{
 			name:"okx",
 			nick:"okx.com",
 			url:"wss://ws.okx.com:8443/ws/v5/public",
-			referral:"https://www.lybg1688.com/join/7564540"
+			referral:"https://www.okx.com/join/7564540"
 		}/*,
 		{
 			name:"binance",
@@ -26,8 +13,6 @@ let coin={
 		}*/
 	],
 	init:(config)=>{
-		console.log(coin.edition);
-
 		coin.config=config;
 		coin.initAPI();
 		coin.initTradingpair("okx");
@@ -35,12 +20,14 @@ let coin={
 		coin.initTPEdit();
 		coin.tabSwitch();
 		coin.initI18n();
-		coin.initVer();
 
 		// coin.godInit();
 		// coin.dataInit();
 		document.addEventListener("click",coin.handleEvent,false);
 		document.addEventListener("change",coin.handleEvent,false);
+
+		document.querySelector(".about-name").innerText=chrome.runtime.getManifest().name;
+		document.querySelector(".about-ver").innerText=`(ver ${chrome.runtime.getManifest().version})`;
 	},
 	handleEvent:e=>{
 		switch(e.type){
@@ -53,6 +40,9 @@ let coin={
 				}
 				if(e.target.classList.contains("tp-li")){
 					coin.tabSwitch(e.target);
+				}
+				if(e.target.classList.contains("tpwrap-li")){
+					coin.tpboxTabSwitch(e.target);
 				}
 				if(e.target.id=="save"){
 					coin.confSave();
@@ -85,21 +75,8 @@ let coin={
 		domBg.appendChild(domAbout);
 		document.body.appendChild(domBg);
 	},
-	initVer:()=>{
-		var domVer=document.querySelector(".about-ver");
-			domVer.innerText="(ver "+chrome.runtime.getManifest().version+")";
-		var domName=document.querySelector(".about-name");
-			domName.innerText=chrome.runtime.getManifest().name;
-
-		var arrayVer=["edition_normal","edition_chia"]
-		var allDivs=document.querySelectorAll(".about-editionlistwrap");
-		for(var i=0;i<allDivs.length;i++){
-			var _vers=allDivs[i].querySelectorAll("div");
-			for(var ii=0;ii<_vers.length;ii++){
-				_vers[ii].querySelector("a").innerText=coin.verurl[arrayVer[i]][ii];
-				_vers[ii].querySelector("a").href=coin.verurl[arrayVer[i]][ii];
-			}
-		}
+	getRandomColor:()=>{
+		return `#${Math.random().toString(16).substr(2, 6)}`;
 	},
 	initI18n:()=>{
 		var doms=document.querySelectorAll("*[data-i18n]");
@@ -156,16 +133,17 @@ let coin={
 		for(var i in JSON.parse(JSON.stringify(coin.config[coin.config.apiserve]))){
 			_conf=JSON.parse(JSON.stringify(coin.config[coin.config.apiserve]))[i][0];
 			_conf.name=_name;
+			_conf.badge.inicon=false;
 			break;
 		}
 		for(var i in _conf.badge){
 			if(i.indexOf("color")!=-1){
-				_conf.badge[i]="#"+parseInt(Math.random()*256).toString(16)+parseInt(Math.random()*256).toString(16)+parseInt(Math.random()*256).toString(16);
+				_conf.badge[i]=coin.getRandomColor();
 			}
 		}
 		for(var i in _conf.tab){
 			if(i.indexOf("color")!=-1){
-				_conf.tab[i]="#"+parseInt(Math.random()*256).toString(16)+parseInt(Math.random()*256).toString(16)+parseInt(Math.random()*256).toString(16);
+				_conf.tab[i]=coin.getRandomColor();
 			}
 		}
 		console.log(_name)
@@ -232,6 +210,22 @@ let coin={
 		tab.classList.add("tp-tab-current");
 		list.classList.add("tp-list-current");
 	},
+	tpboxTabSwitch:(dom)=>{
+		console.log("tpboxTabSwitch")
+		console.log(dom)
+
+		var tabs=dom.parentNode.querySelectorAll(".tpwrap-li"),
+			tab=!dom?tabs[0]:dom;
+		console.log(tabs)
+		var lists=dom.parentNode.parentNode.querySelectorAll(".tp-wrap"),
+			list=dom.parentNode.parentNode.querySelector("[data-wrap='"+tab.dataset.tab+"']");
+		for(var i=0;i<tabs.length;i++){
+			tabs[i].classList.contains("tpwrap-current")?tabs[i].classList.remove("tpwrap-current"):null;
+			lists[i].classList.contains("tp-wrap-current")?lists[i].classList.remove("tp-wrap-current"):null;
+		}
+		tab.classList.add("tpwrap-current");
+		list.classList.add("tp-wrap-current");
+	},
 	initTPcurrent:(dom)=>{
 		if(!dom){
 			dom=document.querySelectorAll("#tp-tab>li")[0];
@@ -241,9 +235,10 @@ let coin={
 	},
 	initTPEdit:()=>{
 		var _color=(conftype,conf)=>{
+			console.log(_conf[conftype][conf])
 			var _dom=coin.domCreate("div",null,"tp-optionlist"),
 				_name=coin.domCreate("span",null,null,coin.i18n("opt_"+conf)),
-				_color=coin.domCreate("input",null,null,null,null,"color",null,_conf[conftype][conf],[["conftype",conftype],["conf",conf]]);
+				_color=coin.domCreate("input",null,null,null,null,"color",null,_conf[conftype][conf]||coin.getRandomColor(),[["conftype",conftype],["conf",conf]]);
 			_dom.appendChild(_name);
 			_dom.appendChild(_color);
 			return _dom;
@@ -274,6 +269,8 @@ let coin={
 
 		domGroup.innerText="";
 		domTab.innerText="";
+
+		var _randColor=coin.getRandomColor();
 		
 		for(var i in coin.config[coin.config.apiserve]){
 			// console.log(i)
@@ -284,10 +281,12 @@ let coin={
 			// console.log(coin.config[coin.config.apiserve][i])
 
 			for(var ii in coin.config[coin.config.apiserve][i]){
+				console.log(_randColor)
 				var _name=coin.config[coin.config.apiserve][i][ii].name,
 					_conf=coin.config[coin.config.apiserve][i][ii];
 				// console.log(_conf)
 				var _tpBox=coin.domCreate("div",null,"tpbox");
+					// _tpBox.style.cssText+="background-color:"+_randColor
 				
 				// btn delete =========
 				var _btnDel=coin.domCreate("span",null,"btn-del","X");
@@ -295,26 +294,42 @@ let coin={
 
 				// tp name ===================
 				var _tpName=coin.domCreate("span",null,"tpname",_conf.name);
+				// _tpName.style.cssText+="background-color:"+_randColor
 				_tpBox.appendChild(_tpName);
 
-				var _domBadge=coin.domCreate("div",null,"tp-wrap");
-				_domBadge.appendChild(coin.domCreate("div",null,"tp-optionname",coin.i18n("name_inbadge")));
+				var _tpUl=coin.domCreate("ul",null,"tpwrap-ul");
+				var _tpli_icon=coin.domCreate("li",null,"tpwrap-li",coin.i18n("name_inbadge"));
+					_tpli_icon.dataset.tab="0";
+					_tpli_icon.classList.add("tpwrap-current");
+				var _tpli_tab=coin.domCreate("li",null,"tpwrap-li",coin.i18n("name_intab"));
+					_tpli_tab.dataset.tab="1";
+				_tpUl.appendChild(_tpli_icon);
+				_tpUl.appendChild(_tpli_tab);
+				_tpBox.appendChild(_tpUl);
+
+				var _domBadge=coin.domCreate("div",null,"tp-wrap tp-wrap-"+i+"-"+ii);
+				// _domBadge.appendChild(coin.domCreate("div",null,"tp-optionname",coin.i18n("name_inbadge")));
+					_domBadge.dataset.wrap="0";
+					_domBadge.classList.add("tp-wrap-current");
+				_domBadge.appendChild(_checkbox("badge","inicon","check-inicon-"+i+"-"+ii));
 				_domBadge.appendChild(_color("badge","badgebgcolor"));
 				_domBadge.appendChild(_color("badge","iconcolor"));
 				_domBadge.appendChild(_color("badge","iconbgcolor"));
 				_domBadge.appendChild(_checkbox("badge","tpicon","check-tpicon-"+i+"-"+ii));
-				_domBadge.appendChild(_checkbox("badge","inicon","check-inicon-"+i+"-"+ii));
 				_tpBox.appendChild(_domBadge);
 
-				var _domTab=coin.domCreate("div",null,"tp-wrap");
-				_domTab.appendChild(coin.domCreate("div",null,"tp-optionname",coin.i18n("name_intab")));
-				// _domTab.appendChild(_color("tab","bgcolor"));
-				// _domTab.appendChild(_range("tab","opacity",{min:0,max:1,step:0.1,value:_conf.tab.opacity}));
+				var _domTab=coin.domCreate("div",null,"tp-wrap tp-wrap-"+i+"-"+ii);
+				// _domTab.appendChild(coin.domCreate("div",null,"tp-optionname",coin.i18n("name_intab")));
+					_domTab.dataset.wrap="1";
+				_domTab.appendChild(_checkbox("tab","intab","check-intab-"+i+"-"+ii));
 				_domTab.appendChild(_color("tab","namecolor"));
 				_domTab.appendChild(_color("tab","namebgcolor"));
 				_domTab.appendChild(_color("tab","pricecolor"));
 				_domTab.appendChild(_color("tab","pricebgcolor"));
-				_domTab.appendChild(_checkbox("tab","intab","check-intab-"+i+"-"+ii));
+				_domTab.appendChild(_color("tab","hlpricecolor"));
+				_domTab.appendChild(_color("tab","hlpricebgcolor"));
+				_domTab.appendChild(_color("tab","volumecolor"));
+				_domTab.appendChild(_color("tab","volumebgcolor"));
 				_tpBox.appendChild(_domTab);
 
 				_domList.appendChild(_tpBox);
@@ -394,19 +409,13 @@ let coin={
 						var xx=await fetch(_url).then(res=>res.json());
 						return xx;
 					}
-					var _type_array=["SPOT","MARGIN","SWAP","FUTURES","OPTION","OPTION"];
+					var _type_array=["SPOT"/*,"MARGIN"*/,"SWAP","FUTURES","OPTION","OPTION"];
 					for(var i=0;i<_type_array.length;i++){
 						_conf[type][_type_array[i]]=_conf[type][_type_array[i]]||[];
 						var _data=await get_instrument(_type_array[i]);
 						console.log(_data)
 						for(var ii=0;_data&&ii<_data.data.length;ii++){
-							if(coin.edition!="normal"){
-								if(_data.data[ii].instId.split("-")[0].toLowerCase()==coin.edition){
-									_conf[type][_type_array[i]].push(_data.data[ii].instId);
-								}
-							}else{
-								_conf[type][_type_array[i]].push(_data.data[ii].instId);
-							}
+							_conf[type][_type_array[i]].push(_data.data[ii].instId);
 						}
 					}
 					await chrome.storage.local.set(_conf);

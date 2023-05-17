@@ -2,15 +2,6 @@
 	"ext_name":{
 		"message":"加密货币行情助手"
 	},
-	"ext_name_xch":{
-		"message":"行情助手 - Chia(XCH)专版"
-	},
-	"ext_name_eth":{
-		"message":"行情助手 - 以太坊(ETH)专版"
-	},
-	"ext_name_btc":{
-		"message":"行情助手 - 比特币(BTC)专版"
-	},
 	"ext_des": {
 		"message": "在图标上或者标签页内显示指定加密货币的价格。"
 	},
@@ -184,5 +175,29 @@
 	},
 	"opt_tabinterval":{
 		"message":"与扩展后台进程通信的间隔时间"
+	},
+	"hlprice_h":{
+		"message":"高"
+	},
+	"hlprice_l":{
+		"message":"低"
+	},
+	"volume_vol":{
+		"message":"量"
+	},
+	"volume_ccy":{
+		"message":"额"
+	},
+	"opt_hlpricecolor":{
+		"message":"24小时最高/低价字体颜色"
+	},
+	"opt_hlpricebgcolor":{
+		"message":"24小时最高/低价背景颜色"
+	},
+	"opt_volumecolor":{
+		"message":"24小时交易量/额字体颜色"
+	},
+	"opt_volumebgcolor":{
+		"message":"24小时交易量/额背景颜色"
 	}
 }

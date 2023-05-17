@@ -5,12 +5,14 @@ cointicker{
 	border-radius: 2px;
 	z-index: 999999;
 	border: 1px solid #ccc;
-	width: 280px;
+/*	width: 280px;*/
+/*	width: 470px;*/
 	box-sizing: border-box;
 	padding: 16px 4px;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
+/*	width: 0;*/
 	transition: all .2s ease-in-out;
 }
 cointicker:hover{
@@ -23,6 +25,8 @@ cointicker main{
 	/*min-width: 100px;*/
 	/*min-height: 64px;*/
 	/*padding: 8px 2px;*/
+	padding: 0;
+	margin: 0;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -44,7 +48,7 @@ cointicker main #btn-close:hover{
 	font-weight: bold;
 }
 cointicker main .coin-list{
-	margin: 2px 0;
+/*	margin: 2px 0;*/
 }
 cointicker main .coin-name,
 cointicker main .coin-price{
@@ -60,7 +64,7 @@ cointicker main .coin-price{
 /*cointicker main .coin-name::after{
 	content: ":";
 }*/
-cointicker main .coin-name{
+/*cointicker main .coin-name{
 	float: left;
 	width: 160px;
 	text-align: right;
@@ -69,4 +73,117 @@ cointicker main .coin-price{
 	float: inherit;
 	min-width: 90px;
 	text-align: left;
+}*/
+cointicker main .coin-wrap-name{
+	float: left;
+/*	width: 160px;*/
+	width: auto;
+	text-align: right;
+}
+cointicker main .coin-wrap-name>div{
+	justify-content: right;
+}
+cointicker main .coin-wrap-price{
+	float: left;
+/*	width: 110px;*/
+/*	width: 60px;*/
+	width: auto;
+	text-align: left;
+}
+cointicker main .coin-wrap-name>div,
+cointicker main .coin-wrap-price>div,
+cointicker main .coin-wrap-hlprice>div,
+cointicker main .coin-wrap-volume>div{
+/*	margin: 1px 0;*/
+	height: 40px;
+/*	line-height: 40px;*/
+	display: flex;
+/*	justify-content: center;*/
+	align-items: center;
+/*	height: 50%;*/
+}
+cointicker main .coin-wrap-hlprice>div,
+cointicker main .coin-wrap-volume>div{
+	padding: 0 4px;
+}
+
+cointicker main .coin-wrap-hlprice{
+	float: left;
+/*	width: 80px;*/
+	width: auto;
+	font-size: 10px;
+	font-weight: bold;
+}
+cointicker main .coin-wrap-hlprice .coin-hlprice-l{
+	width: auto;
+	float: left;
+}
+cointicker main .coin-wrap-hlprice .coin-hlprice-r{
+	width: auto;
+	float: left;
+}
+cointicker main .coin-wrap-hlprice .coin-hlprice-l>div,
+cointicker main .coin-wrap-hlprice .coin-hlprice-r>div{
+	height: 20px;
+	line-height: 20px;
+	padding: 0 2px;
+}
+cointicker main .coin-wrap-hlprice .coin-hlprice-value{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+cointicker main .coin-wrap-volume{
+	float: left;
+/*	width: 110px;*/
+	width: auto;
+	font-size: 10px;
+	font-weight: bold;
+}
+cointicker main .coin-wrap-volume .coin-volume-l{
+	width: auto;
+	float: left;
+}
+cointicker main .coin-wrap-volume .coin-volume-r{
+	width: auto;
+	float: left;
+}
+cointicker main .coin-wrap-volume .coin-volume-l>div,
+cointicker main .coin-wrap-volume .coin-volume-r>div{
+	height: 20px;
+	line-height: 20px;
+	padding: 0 2px;
+}
+cointicker main .coin-wrap-volume .coin-volume-value{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+cointicker main #btn-expand{
+	position: absolute;
+	top: 20%;
+	right: 0;
+	/*border: 1px solid #fff;*/
+	padding: 0 8px;
+	font-size: 12px;
+	border-radius: 1px;
+	cursor: pointer;
+	opacity: 0.2;
+	transition: all .2s ease-in-out;
+	height: 60px;
+	color: #fff;
+/*	background: url(../img/expand.png) no-repeat center #00000080;
+	background-size: contain;*/
+	margin-right: 5px;
+	border-radius: 20px 0 0 20px;
+}
+cointicker main #btn-expand:hover{
+	opacity: 0.8;
+	background-color: #554d4d;
+}
+cointicker main #btn-expand.clicked{
+	transform: rotate(180deg);
+	border-radius: 0 20px 20px 0;
 }
