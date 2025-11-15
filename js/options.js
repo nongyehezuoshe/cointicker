@@ -235,7 +235,7 @@ let coin={
 	},
 	initTPEdit:()=>{
 		var _color=(conftype,conf)=>{
-			console.log(_conf[conftype][conf])
+			// console.log(_conf[conftype][conf])
 			var _dom=coin.domCreate("div",null,"tp-optionlist"),
 				_name=coin.domCreate("span",null,null,coin.i18n("opt_"+conf)),
 				_color=coin.domCreate("input",null,null,null,null,"color",null,_conf[conftype][conf]||coin.getRandomColor(),[["conftype",conftype],["conf",conf]]);
@@ -281,7 +281,7 @@ let coin={
 			// console.log(coin.config[coin.config.apiserve][i])
 
 			for(var ii in coin.config[coin.config.apiserve][i]){
-				console.log(_randColor)
+				// console.log(_randColor)
 				var _name=coin.config[coin.config.apiserve][i][ii].name,
 					_conf=coin.config[coin.config.apiserve][i][ii];
 				// console.log(_conf)

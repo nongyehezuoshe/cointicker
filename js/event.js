@@ -39,7 +39,6 @@
 					}
 					break;
 				case"mousedown":
-					console.log("mousedown")
 					if(e.button==0&&(e.target.classList.contains("cointicker")&&e.target.nodeName.toLowerCase()=="cointicker")){
 						var boxposX=e.target.offsetLeft,
 							boxposY=e.target.offsetTop;
@@ -185,6 +184,7 @@
 			}
 		},
 		posReset:()=>{
+			if (!coin.dom) return;
 			switch(coin.config.tabpos){
 				case"pos_lefttop":
 					coin.dom.style.cssText+="left:12px;top:12px;";
@@ -348,7 +348,7 @@
 						port.postMessage({type:"currentData"});
 					},coin.config.tabinterval||500)
 				}else{
-					console.log(msg)
+					// console.log(msg);
 					if(coin.beattimer){window.clearInterval(coin.beattimer);}
 					coin.beattimer=window.setInterval(()=>{
 						port.postMessage({type: "heartbeat"});
