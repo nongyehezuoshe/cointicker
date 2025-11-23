@@ -87,20 +87,25 @@ let coin={
 	wss:null,
 	currentData:{},
 	port:null,
+	userInstTypes: [], // [OPTION, SPOT, SWAP, FUTURES]: only including user-managed
+	nextIconInstTypeIndex: 0,
+	nextIconInstIdIndex: 0,
+	lastIconChangeTime: 0,
 	socketReopen:()=>{
 		coin.wss.close();
 		// coin.socketOpen();
 	},
 	socketOpen:async ()=>{
 		// await coin.getTradingpair(coin.config.apiserve);
-		let deamon;
+		coin.userInstTypes = Object.keys(coin.config[coin.config.apiserve]);
+		// console.log(coin.userInstTypes);
 		coin.wss=new WebSocket("wss://ws.okx.com:8443/ws/v5/public");
 		coin.wss.addEventListener('open', function (event) {
 			var _obj=coin.config[coin.config.apiserve];
 			var _text="";
 			for (var i in _obj){
 				var _type=i;
-				console.log(_type);
+				// console.log(_type);
 				for( var ii in _obj[i]){
 					var _name=_obj[i][ii].name;
 					var _text=(_text?_text+',':'')+
@@ -109,73 +114,71 @@ let coin={
 						'"instId": "'+_name+'"}';
 				}
 			}
-			coin.wss.send('{"op": "subscribe","args": ['+_text+']}');
+			let _send_text = '{"op": "subscribe","args": ['+_text+']}';
+			// console.log("socket open:", _send_text);
 			// coin.wss.send('{"op": "subscribe","args": [{"channel": "instruments","instType": "SWAP"}]}');
+			coin.wss.send(_send_text);
 		});
 		coin.wss.addEventListener('message',async function (e) {
 			// console.log(e);
-			if(e.data=="pong"){
-				return;
-			}
+			if(e.data=="pong"){ return; }
 			var _data=JSON.parse(e.data);
-			if(_data.event&&_data.event=="subscribe"){return;}
+			if(!_data.data || (_data.event && _data.event=="subscribe")) {return;}
 			_data=_data.data[0];
 
-			var _conf;
-			var _obj=coin.config[coin.config.apiserve][_data.instType];
+			var _userInstTypeObjs = coin.config[coin.config.apiserve];
+			var _instType = _data.instType; //current trading pair type
+			var _instIdIndex; //current trading pair Index
+			var _obj=_userInstTypeObjs[_instType];
+			var _conf; //current trading pair settings
 			for(var i in _obj){
 				if(_obj[i].name==_data.instId){
+					_instIdIndex = i
 					_conf=_obj[i];
 					break;
 				}
 			}
 
-			// console.log(_data)
+			// console.log(_conf);
+			// console.log(_data);
 			
 			if(_conf?.tab?.intab){
-			// if(_conf.tab.intab){
 				// if(!coin.currentData[_data.instId]){coin.currentData[_data.instId]=""}
 				coin.currentData[_data.instId]="";
 				coin.currentData[_data.instId]=_data;
 			}
 
-			// if(!coin.config.iconauto||!_conf.badge.inicon){return;}
-			if(!coin.config.iconauto||(!_conf?.badge?.inicon)){return;}
-
-			chrome.action.setBadgeBackgroundColor({color:_conf.badge.badgebgcolor.toUpperCase()});
-			var _text=""
-			if(_data.last.indexOf(".")!=-1){
-				if(_data.last.indexOf(".")==4){
-					chrome.action.setBadgeText({text:_data.last.substr(0,4)});
-					_text=_data.last.substr(5);
-				}else{
-					if(_data.last.indexOf(".")<4){
-						chrome.action.setBadgeText({text:_data.last.substr(0,5)});
-						_text=_data.last.substr(5);
-					}else{
-						chrome.action.setBadgeText({text:_data.last.substr(0,4)});
-						_text=_data.last.substr(4);
-					}
+			let nextIcon = function() {
+				let _currTPLen = coin.config[coin.config.apiserve][coin.userInstTypes[coin.nextIconInstTypeIndex]].length; // current inst type trading pairs length
+				coin.nextIconInstIdIndex = ++coin.nextIconInstIdIndex%_currTPLen; // next inst id
+				if(coin.nextIconInstIdIndex == 0) {
+					coin.nextIconInstTypeIndex = ++coin.nextIconInstTypeIndex%coin.userInstTypes.length; //next inst type
 				}
-			}else{
-				_text=_data.last.substr(4);
+				//console.log("next inst type index:", coin.nextIconInstTypeIndex, "next inst id index: ", coin.nextIconInstIdIndex);
 			}
-
-			if(_conf.badge.tpicon){
-				if(_text.length==0){
-					coin.setIcon(_data.instId.substr(0,_data.instId.indexOf("-")),_conf);
-				}else{
-					coin.setIcon(_text,_conf);
+			const now = Date.now();
+			let hadSetIcon = false;
+			if(_instType == coin.userInstTypes[coin.nextIconInstTypeIndex]) {
+				if(_instIdIndex == coin.nextIconInstIdIndex) {
+					if(coin.config.iconauto && (_conf?.badge?.inicon)){ // display in icon
+						// console.log("-->inst type:", _data.instType, " || inst id:", _data.instId);
+						if (now - coin.lastIconChangeTime < 1500) return;
+						coin.lastIconChangeTime = now;
+						// console.log("++>>>inst type:", _data.instType, " || inst id:", _data.instId, " || price:", _data.last);
+						coin.setIcon(_data.instId, _data.last, _conf);
+						hadSetIcon = true;
+					}
+					if(!hadSetIcon) { coin.lastIconChangeTime = now; }
+					nextIcon();
 				}
-			}else{
-				if(_text.length==0){
-					chrome.action.setIcon({path:"./icons/icon.png"});
-				}else{
-					coin.setIcon(_text,_conf);
-				}
+			}
+			if(!hadSetIcon && now - coin.lastIconChangeTime > 2000) { // maybe some trading pair subscribe failed and no return message
+				coin.lastIconChangeTime = now;
+				nextIcon();
 			}
 		});
 		coin.wss.addEventListener('error',e=>{
+			console.log("socket error =>");
 			console.log(e);
 			chrome.action.setBadgeText({text:"Err"});
 			// if(_conf.tab.intab){
@@ -186,12 +189,52 @@ let coin={
 			// coin.socketOpen();
 		});
 		coin.wss.addEventListener('close',e=>{
-			console.log("close")
+			console.log("socket close")
 			coin.socketOpen();
 		});
 	},
-	setIcon:(text,conf)=>{
-		// console.log(text)
+	setIcon:(instId, price, conf)=>{
+		let _text_badge; // price:integer for badge
+		let _text_icon; // price:decimal for icon
+		let _pos_point = price.indexOf(".");
+
+		/**
+		 * The price display rule on badge and icon(notice: max-digits limit of badge = 4):
+		 * 12345678 => 1234 + 5678
+		 * 123456.7 => 1234 + 56.7
+		 * 12345.67 => 1234 + 5.67
+		 * 1234.567 => 1234 + 567		(should remove the dot)
+		 * 123.4567 => 123.4 + 567
+		 * 12.34567 => 12.34 + 567
+		 * 1.234567 => 1.234 + 567
+		 * 0.123456 => 0.123 + 456
+		 */
+		if( _pos_point == -1 || _pos_point > 4){  // no decimal or integer digits greater than 4
+			_text_badge = {text:price.substr(0, 4)}
+			_text_icon = price.substr(4, 4);
+		} else {
+			if(_pos_point == 4) {
+			_text_badge = {text:price.substr(0, _pos_point)}
+			_text_icon = price.substr(_pos_point + 1, 4);
+			}else if(_pos_point < 4) {
+				_text_badge = {text:price.substr(0, 5)}
+				_text_icon = price.substr(5, 4);
+			}
+		}
+		// console.log(instId, "=>", price,  "[badge text:", _text_badge, "icon text:", _text_icon, "]");
+
+		if(conf.badge.tpicon){
+			if(_text_icon.length == 0){
+				_text_icon = instId.substr(0,instId.indexOf("-"));
+			}
+		}else{
+			if(_text_icon.length == 0){
+				_text_icon = {path:"./icons/icon.png"};
+			}
+		}
+
+		chrome.action.setBadgeBackgroundColor({color: conf.badge.badgebgcolor.toUpperCase()});
+		chrome.action.setBadgeText(_text_badge);
 		var c=new OffscreenCanvas(32,32)
 		var ctx=c.getContext("2d");
 			
@@ -201,7 +244,7 @@ let coin={
 		ctx.fillStyle= conf.badge.iconcolor.toUpperCase(); /*"white";*/
 		ctx.textAlign="center";
 		ctx.font="bold 14px Arial";
-		ctx.fillText(text,16,14);
+		ctx.fillText(_text_icon,16,14);
 
 		chrome.action.setIcon({imageData:ctx.getImageData(0, 0, 32, 32)})
 	},
@@ -219,7 +262,7 @@ let coin={
 	},
 	confLoad:async ()=>{
 		coin.config=await chrome.storage.sync.get();
-		console.log(coin.config)
+		// console.log(coin.config)
 		if((!coin.config.ver)||(coin.config.ver<2)){
 			console.log("ffff");
 			await chrome.storage.sync.set(defaultConf);
@@ -246,7 +289,7 @@ let coin={
 				for(var i=0;i<_type_array.length;i++){
 					_conf[type][_type_array[i]]=_conf[type][_type_array[i]]||[];
 					var _data=await get_instrument(_type_array[i]);
-					console.log(_data)
+					// console.log(_data)
 					for(var ii=0;_data&&ii<_data.data.length;ii++){
 						_conf[type][_type_array[i]].push(_data.data[ii].instId);
 					}
@@ -264,6 +307,7 @@ let coin={
 	await coin.confLoad();
 	coin.socketOpen();
 	chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+		console.log("chrome runtime msg: ", message.type);
 		switch(message.type){
 			case"event_getconf":
 				sendResponse(coin.config);
